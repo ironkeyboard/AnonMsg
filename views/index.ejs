@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Primary Meta Tags -->
+    <title>AnonMsg</title>
+    <meta name="title" content="AnonMsg the anonymous messaging site">
+    <meta name="description" content="AnonMsg lets you chat privately fast! Developed by ironkeyboard">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font: 13px Helvetica, Arial; color: white;}
+        form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; border-color: #000; border-top-style: solid; border-top-width: 1px;}
+        form input { border-style: solid; border-width: 1px; padding: 10px; width: 85%; margin-right: .5%; }
+        form button { width: 9%; background: #ffffff; border: none; padding: 10px; margin-left: 2%; }
+        h1 {padding: 5px 5px;}
+        h3 {padding: 5px 5px;}
+        li
+        a {color: #0099ff;}
+        /* Each state */
+        a:visited { text-decoration: none; color:0099ff; }
+        a:hover { text-decoration: none; color:0099ff; }
+        a:focus { text-decoration: none; color:0099ff; }
+        a:hover, a:active { text-decoration: none; color:0099ff }
+        #messages { list-style-type: none; margin: 0; padding: 0; color: #000}
+        #messages li {width: 100%; padding: 5px 10px}
+        #messages li:nth-child(odd) { background: #2e2e2e; }
+        #chatarea {width:50%; margin:0 auto; padding-bottom: 10%; background-color: #404040}
+    </style>
+    <script src="../../socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/1.1.1/marked.min.js" integrity="sha512-KCyhJjC9VsBYne93226gCA0Lb+VlrngllQqeCmX+HxBBHTC4HX2FYgEc6jT0oXYrLgvfglK49ktTTc0KVC1+gQ==" crossorigin="anonymous"></script>
+  </head>
+  <body style="background: #000">
+      <header align="center">
+          <h1 style = "padding: 5px 5px">AnonMsg</h1>
+          <h3>AnonMsg v1.0</h3>
+          <h3>Made with ❤ by  <a href = "https://github.com/ironkeyboard">ironkeyboard</a> for <strong style = "color: green;">myungling</strong></h3>
+          
+      </header>
+      <br>
+      <br>
+      <br>
+    <div id = "chatarea">
+    <ul id="messages"></ul>
+    </div>
+    <form action="/" method="POST" id="chatForm">
+      <input id="txt" autocomplete="off" autofocus="on" oninput="isTyping()" placeholder="Your message" /><button>send</button>
+    </form>
+    <script>
+      var socket = io.connect('https://mckenna-leo-chat.fishingfights.repl.co/');
+      $('form').submit(function(e){
+        e.preventDefault();
+        socket.emit('chat_message', $('#txt').val());
+        $('#txt').val('');
+        return false;
+      });
+      socket.on('chat_message', function(msg){
+        $('#messages').append($('<li>').html(msg));
+      });
+      socket.on('is_online', function(username) {
+        $('#messages').append($('<li>').html(username));
+      });
+      var username = prompt('Please enter your username for the website:');
+      while (username == ""){
+        var username = prompt('You did not enter a valid username\nplease try again:');
+      }
+      socket.emit('username', username);
+    </script>
+  </body>
+</html>

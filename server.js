@@ -5,6 +5,12 @@ const ejs = require('ejs');
 const io = require('socket.io')(http);
 const marked = require('marked');
 const fs = require('fs');
+var randomColor = require('randomcolor');
+
+let dataNames = {
+	"mckenna": ["💚", "green"],
+  	"leo": ["Owner", "#FFD700 "]
+    };
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
@@ -33,9 +39,9 @@ io.sockets.on('connection', (socket) => {
       if (socket.username == undefined){
           socket.username = "expired"
       }
-      var color = 'style = "color: black"'
+      var color = `style = "color: ${randomColor()}`
       if (socket.username.toLowerCase() == "mckenna"){
-        color = 'style = "color: green"';
+        color = `style = "color: green "`;
       };
       if (socket.username.toLowerCase() != ""){
         io.emit('chat_message',`</strong> [${now.toLocaleDateString("en-us")}]</strong>` +  `<strong ${color}> ` + socket.username + '</strong> ⟶ ' + message);
